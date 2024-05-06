@@ -16,12 +16,10 @@ async function displayData(recipes) {
     recipesSection.innerHTML = ""
     recipes.forEach((recipe) => {
         if (recipe.id < 9) {
-            console.log(recipe)
             const recipeModel = recipeTemplate(recipe);
             const userCardDOM = recipeModel.getUserCardDOM();
             recipesSection.innerHTML += userCardDOM;
         }
-
     });
 }
 
