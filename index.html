@@ -15,17 +15,62 @@
 
 <body>
     <header>
-        <img src="assets/favicon.png" alt="logo Les Petits Plats"/>
-        <h1>CHERCHEZ PARMI PLUS DE 1500 RECETTES 
+        <img src="assets/favicon.png" alt="logo Les Petits Plats" />
+        <h1>CHERCHEZ PARMI PLUS DE 1500 RECETTES
             DU QUOTIDIEN,SIMPLES ET DÉLICIEUSES</h1>
-            <input class="searchbar" type="text" placeholder="Rechercher une recette, un ingrédient, ...">
+        <form>
+            <div class="main-searchbar-box">
+                <input class="searchbar" type="text" placeholder="Rechercher une recette, un ingrédient, ..." required>
+                <button class="close-icon" type="reset"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <button class="searchbutton transition-colors ease-in-out duration-500"><i
+                    class="fa-solid fa-magnifying-glass"></i></button>
+        </form>
+
     </header>
     <main id="main">
-            <section class="recipes-section">
-            </section>
+        <div class="recipes-total"></div>
+        <section class="filters-section">
+            <div class="filter ingredients-filter transition-height ease-in-out duration-300">
+                <h2 class="filter-name">Ingrédients</h2>
+                <form class="search-form invisible transition-visibility ease-in-out duration-300">
+                    <div class="searchbar-box">
+                        <input type="text" required class="filter-searchbar ingredients-searchbar">
+                        <button class="close-icon" type="reset"><i class="fa-solid fa-xmark"></i></button>
+                    </div>
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </form>
+                <ul class="filter-list ingredients-list invisible transition-opacity ease-in-out duration-300"></ul>
+            </div>
+            <div class="filter appliance-filter transition-height ease-in-out duration-300">
+                <h2 class="filter-name">Appareils</h2>
+                <form class="search-form invisible transition-visibility ease-in-out duration-300">
+                    <div class="searchbar-box">
+                        <input type="text" required class="filter-searchbar appliance-searchbar">
+                        <button class="close-icon" type="reset"><i class="fa-solid fa-xmark"></i></button>
+                    </div>
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </form>
+                <ul class="filter-list appliance-list invisible transition-opacity ease-in-out duration-300"></ul>
+            </div>
+            <div class="filter ustensils-filter transition-height ease-in-out duration-300">
+                <h2 class="filter-name">Ustensiles</h2>
+                <form class="search-form invisible  transition-visibility ease-in-out duration-300">
+                    <div class="searchbar-box">
+                        <input type="text" required class="filter-searchbar ustensils-searchbar">
+                        <button class="close-icon" type="reset"><i class="fa-solid fa-xmark"></i></button>
+                    </div>
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </form>
+                <ul class="filter-list ustensils-list invisible transition-opacity ease-in-out duration-300"></ul>
+            </div>
+            <div class="active-filters"></div>
+        </section>
+        <section class="recipes-section"></section>
     </main>
     <script type="module" src="js/index.js"></script>
     <script type="module" src="js/recipe_template.js"></script>
+    <script type="module" src="js/filters.js"></script>
 </body>
 
 </html>

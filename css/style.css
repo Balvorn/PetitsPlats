@@ -27,32 +27,180 @@ header h1 {
     font-size: 44px;
     width: 720px;
     margin-bottom: 25px;
+    text-align: center;
 }
 
-.searchbar{
+header form {
+    position: relative;
+    line-height: 52px;
     background-color: white;
+    padding: 10px;
     border-radius: 11px;
-    width: 950px;
-    height: 72px;
+    width: 750px;
+}
+
+.main-searchbar-box{
+    width: 90%;
+    position: relative;
+    display: inline-block;
+}
+
+.searchbar {
+    width: 100%;
+    background-color: white;
     font-family: 'Manrope';
     padding-left: 25px;
+}
 
+.close-icon {
+    position: absolute;
+    border: 1px solid transparent;
+    background-color: transparent;
+    text-align: center;
+    cursor: pointer;
+    color: #7A7A7A;
+    right: 0;
+    width: 25px;
+}
+
+
+
+input:not(:valid) ~ .close-icon {
+	display: none;
+}
+
+.searchbutton {
+    position: absolute;
+    right: 10px;
+    text-align: center;
+    background-color: black;
+    border-radius: 11px;
+    width: 52px;
+    color: white;
+    font-size: 22px;
+    vertical-align: top;
+}
+
+.searchbutton:hover {
+    background-color: #FFD15B;
+    color: black;
+}
+
+body {
+    background-color: #E5E5E5;
+}
+
+main {
+    margin: 30px 50px;
+    position: relative;
+}
+
+.recipes-total {
+    font-family: 'Anton';
+    font-size: 21px;
+    text-align: end;
+    line-height: 55px;
+}
+
+.filters-section {
+    font-family: 'Manrope';
+    width: 600px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    position: absolute;
+    top: 0px;
+    left: 0;
+    z-index: 1;
+}
+
+.filter {
+    width: 180px;
+    padding: 0 15px;
+    background-color: white;
+    border-radius: 11px;
+    height: 55px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    
+}
+
+.filter h2 {
+    line-height: 55px;
+    cursor: pointer;
+    position: relative;
+}
+
+.filter h2::after {
+    font-weight: 900;
+    content: "\f078";
+    font-family: "Font Awesome 6 Free";
+    align-self: start;
+    position: absolute;
+    right: 0;
+}
+
+.filter-list {
+    overflow-y: scroll;
+    scrollbar-width: none;
+    opacity: 0;
+    visibility: hidden;
+}
+
+.search-form {
+    border: solid #C6C6C6 2px;
+    border-radius: 2px;
+    color: #7A7A7A;
+    line-height: 35px;
+    padding-right: 5px;
+    opacity: 0;
+}
+
+.searchbar-box{
+    width: 85%;
+    position: relative;
+    display: inline-block;
+}
+
+.filter-searchbar {
+    width: 100%;
+    padding: 0 5px;
+}
+
+.opened-filter {
+    height: 350px;
+}
+
+.opened-filter h2::after {
+    content: "\f077";
+}
+
+.opened-filter>.filter-list,.opened-filter>.search-form{
+    visibility: visible;
+    opacity: 1;
+}
+
+.active-filters {
+    width: 66%;
 }
 
 .recipes-section {
     display: grid;
     grid-template-columns: repeat(auto-fit, max(380px, 100%/4));
     gap: 20px;
-    padding-top: 100px;
+    margin-top: 50px;
     justify-content: space-around;
     align-content: flex-start;
-    background-color: #E5E5E5;
+
 }
 
 article {
     position: relative;
     font-family: 'Manrope';
     margin-bottom: 25px;
+    width: 380px;
+    height: 730px;
 }
 
 article img {
@@ -60,8 +208,8 @@ article img {
     border-top-left-radius: 21px;
     border-top-right-radius: 21px;
     object-fit: cover;
-    height: 250px;
-    width: 380px;
+    height: 35%;
+    width: 100%;
 }
 
 .time {
@@ -79,7 +227,7 @@ article img {
 }
 
 .card-content {
-    height: 480px;
+    height: 65%;
     background-color: white;
     padding: 25px;
     border-bottom-left-radius: 21px;
