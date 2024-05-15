@@ -100,10 +100,14 @@ main {
     font-size: 21px;
     text-align: end;
     line-height: 55px;
+    position: relative;
 }
 
 .filters-section {
     font-family: 'Manrope';
+}
+.filters-selection{
+    
     width: 600px;
     display: flex;
     flex-wrap: wrap;
@@ -112,18 +116,21 @@ main {
     top: 0px;
     left: 0;
     z-index: 1;
+    height: 55px;
 }
 
 .filter {
     width: 180px;
-    padding: 0 15px;
     background-color: white;
     border-radius: 11px;
-    height: 55px;
+    max-height: 55px;
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    
+}
+
+.filter > *{
+    margin: 0 15px;
 }
 
 .filter h2 {
@@ -146,6 +153,20 @@ main {
     scrollbar-width: none;
     opacity: 0;
     visibility: hidden;
+    margin: 0;
+    padding-top: 15px;
+}
+
+.list-item{
+    line-height: 40px;
+    font-weight: 400;
+    font-size: 14px;
+    padding: 0 15px;
+    cursor: pointer;
+}
+
+.list-item:hover{
+    background-color: #FFD15B;
 }
 
 .search-form {
@@ -169,7 +190,7 @@ main {
 }
 
 .opened-filter {
-    height: 350px;
+    max-height: 350px;
 }
 
 .opened-filter h2::after {
@@ -182,7 +203,29 @@ main {
 }
 
 .active-filters {
-    width: 66%;
+    margin-top: 25px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content:left
+
+
+}
+.active-filter {
+    width: 180px;
+    border-radius: 11px;
+    background-color: #FFD15B;
+    height: 55px;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 15px;
+    align-items: center;
+    margin-right: 25px;
+    margin-bottom: 25px;
+
+}
+.active-filter .fa-xmark{
+    font-size: 20px;
+    cursor: pointer;
 }
 
 .recipes-section {

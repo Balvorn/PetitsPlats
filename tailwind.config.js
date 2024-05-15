@@ -7,7 +7,7 @@ module.exports = {
   theme: {
     extend: {
       transitionProperty: {
-        'height': 'height',
+        'height': 'height, max-height, visibility, opacity',
         'visibility': 'visibility, opacity',
       }
     },

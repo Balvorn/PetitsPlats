@@ -12,7 +12,6 @@ export default function recipeTemplate(data) {
         return ingredientsList
     }
 
-
     function getUserCardDOM() {
         const article =
         `<article class="recipe-card" id="${id}">
