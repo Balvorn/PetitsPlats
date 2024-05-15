@@ -1,4 +1,4 @@
-import { displayData, recipes as allRecipes} from "./index.js";
+import { displayData, recipes as allRecipes } from "./index.js";
 
 let selectedRecipes = []
 
@@ -30,12 +30,19 @@ const activeFilters = document.querySelector(".active-filters")
 const filterNames = document.querySelectorAll(".filter-name")
 
 const mainSearch = document.querySelector(".main-search")
+const mainSearchbar = document.querySelector(".searchbar")
 let mainSearchValue = ""
 
-mainSearch.addEventListener("input", function(e){
-    mainSearchValue = e.target[0].value
+mainSearchbar.addEventListener("keyup", function (e) {
+    mainSearchValue = e.target.value
+    if (e.key == "Backspace" && mainSearchValue.length > 2) {
+        updateRecipes(allRecipes)
+    } else if (mainSearchValue.length > 2) updateRecipes(allRecipes)
+    if(mainSearchValue.length == 0) updateRecipes(allRecipes)
+
+})
+mainSearch.addEventListener("submit", function (e) {
     e.preventDefault()
-    updateRecipes()
 })
 mainSearch.addEventListener("reset", function () {
     mainSearchValue = ""
@@ -64,7 +71,7 @@ data.forEach(obj => {
 export function loadFilters(recipes) {
     selectedRecipes = recipes
     data.forEach(el => el.set = new Set())
-    
+
     recipes.forEach(recipe => {
         recipe.ingredients.forEach(el => ingredients.set.add(el.ingredient.toLowerCase()))
         recipe.ustensils.forEach(el => ustensils.set.add(el.toLowerCase()))
@@ -118,9 +125,9 @@ function updateRecipes(recipes = selectedRecipes) {
     let recipesSet = new Set()
     let filtered = false
     let matches = recipes
-    if(mainSearchValue != ""){
+    if (mainSearchValue != "") {
         matches = matches.filter(
-            (item) => strFound(mainSearchValue, item)
+            (item) => strFound(mainSearchValue, [item.name, item.ingredients, item.description])
         )
         filtered = true
     }
@@ -136,10 +143,10 @@ function updateRecipes(recipes = selectedRecipes) {
     selectedRecipes = filtered ? [...recipesSet] : allRecipes
     displayData(selectedRecipes)
     loadFilters(selectedRecipes)
-
 }
 
 function strFound(text, obj) {
+    if (Object.hasOwn(obj, 'ingredient')) return strFound(text, obj.ingredient)
     if (typeof obj === "string") return obj.toLowerCase().includes(text);
-    return Object.values(obj).some(val => strFound(text, val));
+    return obj.some(val => strFound(text, val));
 }
