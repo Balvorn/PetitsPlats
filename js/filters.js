@@ -38,7 +38,7 @@ mainSearchbar.addEventListener("keyup", function (e) {
     if (e.key == "Backspace" && mainSearchValue.length > 2) {
         updateRecipes(allRecipes)
     } else if (mainSearchValue.length > 2) updateRecipes(allRecipes)
-    if(mainSearchValue.length == 0) updateRecipes(allRecipes)
+    if (mainSearchValue.length == 0) updateRecipes(allRecipes)
 
 })
 mainSearch.addEventListener("submit", function (e) {
@@ -124,22 +124,32 @@ function removeFilter(filter, category, li) {
 function updateRecipes(recipes = selectedRecipes) {
     let recipesSet = new Set()
     let filtered = false
-    let matches = recipes
+    let matches = [...recipes]
     if (mainSearchValue != "") {
-        matches = matches.filter(
-            (item) => strFound(mainSearchValue, [item.name, item.ingredients, item.description])
-        )
+        for (let i = matches.length - 1; i >= 0; i--) {
+            let match = matches[i];
+            if (!strFound(mainSearchValue, [match.name, match.ingredients, match.description])) matches.splice(i, 1)
+        }
         filtered = true
     }
-    data.forEach((el) => {
-        el.actives.forEach((active) => {
-            matches = matches.filter(
-                (item) => strFound(active, item[el.name])
-            )
+
+    for (let i = 0; i < data.length; i++) {
+        let item = data[i]
+        let actives = item.actives.values()
+        for (let j = 0; j < item.actives.size; j++) {
+            let active = actives.next().value;
+            for (let k = matches.length - 1; k >= 0; k--) {
+                let match = matches[k];
+                if (!strFound(active, match[item.name])) {
+                    matches.splice(k, 1)
+                }
+            }
             filtered = true
-        })
-    })
-    matches.forEach(match => recipesSet.add(match))
+        }
+    }
+    for (let i = 0; i < matches.length; i++) {
+        recipesSet.add(matches[i])
+    }
     selectedRecipes = filtered ? [...recipesSet] : allRecipes
     displayData(selectedRecipes)
     loadFilters(selectedRecipes)
