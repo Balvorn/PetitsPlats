@@ -1,7 +1,5 @@
 import { displayData, recipes as allRecipes } from "./index.js";
 
-let selectedRecipes = []
-
 const ingredients = {
     name: "ingredients",
     search: document.querySelector(".ingredients-searchbar"),
@@ -25,80 +23,86 @@ const appliances = {
 }
 const data = [ingredients, ustensils, appliances]
 
-const activeFilters = document.querySelector(".active-filters")
-
-const filterNames = document.querySelectorAll(".filter-name")
-
-const mainSearch = document.querySelector(".main-search")
-const mainSearchbar = document.querySelector(".searchbar")
-let mainSearchValue = ""
+const mainSearch = document.querySelector(".main-search") //form
+const mainSearchbar = document.querySelector(".searchbar") //input
+let mainSearchValue = "" //input value
 
 mainSearchbar.addEventListener("keyup", function (e) {
-    mainSearchValue = e.target.value
-    if (e.key == "Backspace" && mainSearchValue.length > 2) {
-        updateRecipes(allRecipes)
-    } else if (mainSearchValue.length > 2) updateRecipes(allRecipes)
-    if (mainSearchValue.length == 0) updateRecipes(allRecipes)
-
+    if (e.target.value.length > 2 || e.target.value.length == 0) {
+        mainSearchValue = e.target.value
+        updateRecipes()
+    }
 })
 mainSearch.addEventListener("submit", function (e) {
     e.preventDefault()
 })
+//reset if close icon clicked
 mainSearch.addEventListener("reset", function () {
     mainSearchValue = ""
-    updateRecipes(allRecipes)
+    updateRecipes()
 })
 
-filterNames.forEach((elem) => {
+//expand/collapse filter divs on click
+document.querySelectorAll(".filter-name").forEach((elem) => {
     elem.addEventListener("click", function () {
         this.parentElement.classList.toggle("opened-filter")
     })
 })
 
-data.forEach(obj => {
-    obj.search.addEventListener("input", function (e) {
-        updateList(obj, e.target.value)
+//update available filters via category-specific searchbar
+data.forEach(category => {
+    category.search.addEventListener("input", function (e) {
+        updateList(category, e.target.value)
     })
-
-    obj.search.form.addEventListener("reset", function () {
-        updateList(obj)
+    category.search.form.addEventListener("reset", function () {
+        updateList(category)
     })
-    obj.search.form.addEventListener("submit", function (e) {
+    category.search.form.addEventListener("submit", function (e) {
         e.preventDefault()
     })
 })
 
 export function loadFilters(recipes) {
-    selectedRecipes = recipes
+    //reset all filters
     data.forEach(el => el.set = new Set())
 
+    //add available filters in corresponding category
     recipes.forEach(recipe => {
         recipe.ingredients.forEach(el => ingredients.set.add(el.ingredient.toLowerCase()))
         recipe.ustensils.forEach(el => ustensils.set.add(el.toLowerCase()))
         appliances.set.add(recipe.appliance.toLowerCase())
     });
+
     updateList(ingredients)
     updateList(ustensils)
     updateList(appliances)
 }
 
-function updateList(obj, filter = "") {
-    obj.list.innerHTML = ""
-    obj.set.forEach(item => {
-        if (item.includes(filter.toLowerCase()) && !obj.actives.has(item)) {
-            const li = document.createElement("li")
-            li.setAttribute("class", obj.name + "-item list-item")
-            li.textContent = item[0].toUpperCase() + item.slice(1).toLowerCase()
-            li.addEventListener("click", function () { addFilter(item, obj) })
+function updateList(category, search = "") {
+    //reset list
+    category.list.innerHTML = ""
 
-            obj.list.appendChild(li)
+    //display filters of specific category, activate on click
+    category.set.forEach(filter => {
+        if (filter.includes(search.toLowerCase()) && !category.actives.has(filter)) {
+            const li = document.createElement("li")
+            li.setAttribute("class", category.name + "-item list-item")
+            li.textContent = filter[0].toUpperCase() + filter.slice(1).toLowerCase()
+            li.addEventListener("click", function () { addFilter(filter, category) })
+            category.list.appendChild(li)
         }
     })
 }
 
 function addFilter(filter, category) {
+    //collapse list
     category.list.parentElement.classList.toggle("opened-filter")
 
+    //add clicked filter to actives set and update available recipes
+    category.actives.add(filter)
+    updateRecipes()
+
+    //display activated filter, deactivate on click
     const li = document.createElement("li")
     li.setAttribute("class", "active-filter")
     li.textContent = filter[0].toUpperCase() + filter.slice(1).toLowerCase()
@@ -106,28 +110,23 @@ function addFilter(filter, category) {
     icon.setAttribute("class", "fa-solid fa-xmark")
     li.appendChild(icon)
     icon.addEventListener("click", function () { removeFilter(filter, category, li) })
-
-    activeFilters.appendChild(li)
-
-    category.actives.add(filter)
-    updateList(category)
-    updateRecipes()
-
+    document.querySelector(".active-filters").appendChild(li)
 }
 
 function removeFilter(filter, category, li) {
     category.actives.delete(filter)
     li.remove()
-    updateRecipes(allRecipes)
+    updateRecipes()
 }
 
-function updateRecipes(recipes = selectedRecipes) {
-    let recipesSet = new Set()
+function updateRecipes() {
     let filtered = false
-    let matches = [...recipes]
+    let matches = [...allRecipes]
+
     if (mainSearchValue != "") {
         for (let i = matches.length - 1; i >= 0; i--) {
             let match = matches[i];
+            //remove recipe from list if keyword not found in name/ingredients/description
             if (!strFound(mainSearchValue, [match.name, match.ingredients, match.description])) matches.splice(i, 1)
         }
         filtered = true
@@ -141,22 +140,25 @@ function updateRecipes(recipes = selectedRecipes) {
             for (let k = matches.length - 1; k >= 0; k--) {
                 let match = matches[k];
                 if (!strFound(active, match[item.name])) {
+                    //remove recipe from list if filter not found in given recipe property (ingredients/ustensils/appliance)
                     matches.splice(k, 1)
                 }
             }
             filtered = true
         }
     }
-    for (let i = 0; i < matches.length; i++) {
-        recipesSet.add(matches[i])
-    }
-    selectedRecipes = filtered ? [...recipesSet] : allRecipes
+
+    //display all recipes if no filters
+    const selectedRecipes = filtered ? matches : allRecipes
     displayData(selectedRecipes)
     loadFilters(selectedRecipes)
 }
 
+
 function strFound(text, obj) {
+    if (typeof obj === "string") return obj.toLowerCase().includes(text)
+
+    //if category is ingredients, only search on ingredient name
     if (Object.hasOwn(obj, 'ingredient')) return strFound(text, obj.ingredient)
-    if (typeof obj === "string") return obj.toLowerCase().includes(text);
-    return obj.some(val => strFound(text, val));
+    return obj.some(val => strFound(text, val))
 }

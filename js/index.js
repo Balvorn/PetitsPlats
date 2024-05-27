@@ -1,14 +1,16 @@
 import recipeTemplate from "./recipe_template.js";
 import {loadFilters} from "./filters.js";
 export let recipes = []
-async function getRecipes() {
 
+// Récupère les recettes
+async function getRecipes() {
     const response = await fetch("../../data/recipes.json");
     const data = await response.json();
     const recipes = data.recipes
     return recipes;
 }
 
+// Affiche les recettes via template
 export function displayData(recipes) {
     const recipesSection = document.querySelector(".recipes-section");
     const recipesTotal = document.querySelector(".recipes-total");
@@ -24,7 +26,6 @@ export function displayData(recipes) {
 }
 
 async function init() {
-    // Récupère les datas des photographes
     recipes = await getRecipes();
     displayData(recipes);
     loadFilters(recipes)
