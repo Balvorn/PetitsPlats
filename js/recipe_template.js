@@ -16,7 +16,7 @@ export default function recipeTemplate(data) {
         return ingredientsList
     }
 
-    function getUserCardDOM() {
+    function getRecipeCardDOM() {
         const article =
             `<article class="recipe-card" id="${id}">
                 <img class="card-img" src="${imgUrl}" alt="${name}">
@@ -35,5 +35,5 @@ export default function recipeTemplate(data) {
             </article>`
         return (article);
     }
-    return { name, imgUrl, getUserCardDOM }
+    return { name, imgUrl, getRecipeCardDOM }
 }

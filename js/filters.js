@@ -4,38 +4,40 @@ const ingredients = {
     name: "ingredients",
     search: document.querySelector(".ingredients-searchbar"),
     list: document.querySelector(".ingredients-list"),
-    set: new Set(),
+    filters: new Set(),
     actives: new Set()
 }
 const ustensils = {
     name: "ustensils",
     search: document.querySelector(".ustensils-searchbar"),
     list: document.querySelector(".ustensils-list"),
-    set: new Set(),
+    filters: new Set(),
     actives: new Set()
 }
 const appliances = {
     name: "appliance",
     search: document.querySelector(".appliances-searchbar"),
     list: document.querySelector(".appliances-list"),
-    set: new Set(),
+    filters: new Set(),
     actives: new Set()
 }
-const data = [ingredients, ustensils, appliances]
+const categories = [ingredients, ustensils, appliances]
 
 const mainSearch = document.querySelector(".main-search") //form
 const mainSearchbar = document.querySelector(".searchbar") //input
-let mainSearchValue = "" //input value
+let mainSearchValue = "" //keyword
 
-mainSearchbar.addEventListener("keyup", function (e) {
+mainSearch.addEventListener("submit", function (e) {
+    e.preventDefault()
+})
+
+mainSearchbar.addEventListener("input", function (e) {
     if (e.target.value.length > 2 || e.target.value.length == 0) {
         mainSearchValue = e.target.value
         updateRecipes()
     }
 })
-mainSearch.addEventListener("submit", function (e) {
-    e.preventDefault()
-})
+
 //reset if close icon clicked
 mainSearch.addEventListener("reset", function () {
     mainSearchValue = ""
@@ -50,27 +52,27 @@ document.querySelectorAll(".filter-name").forEach((elem) => {
 })
 
 //update available filters via category-specific searchbar
-data.forEach(category => {
+categories.forEach(category => {
+    category.search.form.addEventListener("submit", function (e) {
+        e.preventDefault()
+    })
     category.search.addEventListener("input", function (e) {
         updateList(category, e.target.value)
     })
     category.search.form.addEventListener("reset", function () {
         updateList(category)
     })
-    category.search.form.addEventListener("submit", function (e) {
-        e.preventDefault()
-    })
 })
 
 export function loadFilters(recipes) {
     //reset all filters
-    data.forEach(el => el.set = new Set())
+    categories.forEach(category => category.filters = new Set())
 
     //add available filters in corresponding category
     recipes.forEach(recipe => {
-        recipe.ingredients.forEach(el => ingredients.set.add(el.ingredient.toLowerCase()))
-        recipe.ustensils.forEach(el => ustensils.set.add(el.toLowerCase()))
-        appliances.set.add(recipe.appliance.toLowerCase())
+        recipe.ingredients.forEach(obj => ingredients.filters.add(obj.ingredient.toLowerCase()))
+        recipe.ustensils.forEach(ustensil => ustensils.filters.add(ustensil.toLowerCase()))
+        appliances.filters.add(recipe.appliance.toLowerCase())
     });
 
     updateList(ingredients)
@@ -83,7 +85,7 @@ function updateList(category, search = "") {
     category.list.innerHTML = ""
 
     //display filters of specific category, activate on click
-    category.set.forEach(filter => {
+    category.filters.forEach(filter => {
         if (filter.includes(search.toLowerCase()) && !category.actives.has(filter)) {
             const li = document.createElement("li")
             li.setAttribute("class", category.name + "-item list-item")
@@ -120,7 +122,6 @@ function removeFilter(filter, category, li) {
 }
 
 function updateRecipes() {
-    let filtered = false
     let matches = [...allRecipes]
 
     if (mainSearchValue != "") {
@@ -129,11 +130,10 @@ function updateRecipes() {
             //remove recipe from list if keyword not found in name/ingredients/description
             if (!strFound(mainSearchValue, [match.name, match.ingredients, match.description])) matches.splice(i, 1)
         }
-        filtered = true
     }
 
-    for (let i = 0; i < data.length; i++) {
-        let item = data[i]
+    for (let i = 0; i < categories.length; i++) {
+        let item = categories[i]
         let actives = item.actives.values()
         for (let j = 0; j < item.actives.size; j++) {
             let active = actives.next().value;
@@ -144,16 +144,12 @@ function updateRecipes() {
                     matches.splice(k, 1)
                 }
             }
-            filtered = true
         }
     }
 
-    //display all recipes if no filters
-    const selectedRecipes = filtered ? matches : allRecipes
-    displayData(selectedRecipes)
-    loadFilters(selectedRecipes)
+    displayData(matches)
+    loadFilters(matches)
 }
-
 
 function strFound(text, obj) {
     if (typeof obj === "string") return obj.toLowerCase().includes(text)
