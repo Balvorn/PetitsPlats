@@ -23,9 +23,13 @@ const appliances = {
 }
 const categories = [ingredients, ustensils, appliances]
 
+const noMatches = document.querySelector(".no-matches")
+
 const mainSearch = document.querySelector(".main-search") //form
 const mainSearchbar = document.querySelector(".searchbar") //input
 let mainSearchValue = "" //keyword
+
+
 
 mainSearch.addEventListener("submit", function (e) {
     e.preventDefault()
@@ -99,7 +103,8 @@ function updateList(category, search = "") {
 function addFilter(filter, category) {
     //collapse list
     category.list.parentElement.classList.toggle("opened-filter")
-
+    //resset search
+    category.search.value = ""
     //add clicked filter to actives set and update available recipes
     category.actives.add(filter)
     updateRecipes()
@@ -131,6 +136,10 @@ function updateRecipes() {
             if (!strFound(mainSearchValue, [match.name, match.ingredients, match.description])) matches.splice(i, 1)
         }
     }
+
+    if(matches.length == 0){
+        noMatches.textContent =`Aucune recette ne contient "${mainSearchValue}" vous pouvez chercher "tarte aux pommes", "poisson", etc.`
+    }else noMatches.textContent = ""
 
     for (let i = 0; i < categories.length; i++) {
         let item = categories[i]
